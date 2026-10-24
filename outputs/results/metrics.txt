@@ -1,0 +1,22 @@
+============================================================
+LINEAR REGRESSION RESULTS
+============================================================
+Training samples: 353
+Test samples:     89
+
+Mean Squared Error (MSE):  2900.19
+Mean Absolute Error (MAE): 42.79
+R-squared (R2):            0.453
+
+Intercept: -341.38
+Coefficients (largest effect first; features are in different units):
+s5     67.109
+sex   -23.064
+s4     10.160
+bmi     5.846
+s1     -1.282
+bp      1.197
+s2      0.811
+s3      0.602
+s6      0.202
+age     0.138

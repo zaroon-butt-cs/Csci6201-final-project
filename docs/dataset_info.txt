@@ -1,0 +1,36 @@
+Dataset Information
+===================
+
+Dataset Name:
+  Diabetes dataset
+
+Source / Organization:
+  scikit-learn (built-in Toy Dataset). Original data from Bradley Efron,
+  Trevor Hastie, Iain Johnstone and Robert Tibshirani (2004),
+  "Least Angle Regression," Annals of Statistics.
+
+URL:
+  https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_diabetes.html
+  https://scikit-learn.org/stable/datasets/toy_dataset.html#diabetes-dataset
+
+Description:
+  The dataset contains 442 diabetes patients. For each patient there are
+  10 baseline measurements: age, sex, body mass index (bmi), average blood
+  pressure (bp), and six blood serum measurements (s1-s6). The target is a
+  quantitative measure of disease progression one year after baseline
+  (values from 25 to 346). It is a regression problem. There are no missing
+  values.
+
+Original or Modified:
+  Original dataset. It is loaded with scaled=False, so the features are in
+  their original units instead of the default mean-centered and scaled
+  version. No other changes were made.
+
+How it is loaded in Python:
+  The dataset ships with scikit-learn, so no download is needed:
+
+      from sklearn.datasets import load_diabetes
+      df = load_diabetes(as_frame=True, scaled=False).frame
+
+  This returns a pandas DataFrame with the 10 feature columns plus a
+  "target" column.

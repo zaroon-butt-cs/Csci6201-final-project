@@ -1,0 +1,98 @@
+============================================================
+DATASET OVERVIEW
+============================================================
+Shape of the data (rows, columns): (442, 11)
+Number of samples:  442
+Number of features: 10
+Target variable: 'target' = disease progression one year after baseline
+Task type: REGRESSION (the target is a continuous number, not a class)
+
+Feature names:
+  age  - age in years
+  sex  - sex (coded as 1 or 2)
+  bmi  - body mass index
+  bp   - average blood pressure
+  s1   - tc, total serum cholesterol
+  s2   - ldl, low-density lipoproteins
+  s3   - hdl, high-density lipoproteins
+  s4   - tch, total cholesterol / HDL
+  s5   - ltg, log of serum triglycerides level
+  s6   - glu, blood sugar level
+
+============================================================
+DESCRIPTIVE STATISTICS
+============================================================
+          age     sex     bmi      bp      s1      s2      s3      s4      s5      s6  target
+count  442.00  442.00  442.00  442.00  442.00  442.00  442.00  442.00  442.00  442.00  442.00
+mean    48.52    1.47   26.38   94.65  189.14  115.44   49.79    4.07    4.64   91.26  152.13
+std     13.11    0.50    4.42   13.83   34.61   30.41   12.93    1.29    0.52   11.50   77.09
+min     19.00    1.00   18.00   62.00   97.00   41.60   22.00    2.00    3.26   58.00   25.00
+25%     38.25    1.00   23.20   84.00  164.25   96.05   40.25    3.00    4.28   83.25   87.00
+50%     50.00    1.00   25.70   93.00  186.00  113.00   48.00    4.00    4.62   91.00  140.50
+75%     59.00    2.00   29.28  105.00  209.75  134.50   57.75    5.00    5.00   98.00  211.50
+max     79.00    2.00   42.20  133.00  301.00  242.40   99.00    9.09    6.11  124.00  346.00
+
+Minimum and maximum values:
+          min     max
+age     19.00   79.00
+sex      1.00    2.00
+bmi     18.00   42.20
+bp      62.00  133.00
+s1      97.00  301.00
+s2      41.60  242.40
+s3      22.00   99.00
+s4       2.00    9.09
+s5       3.26    6.11
+s6      58.00  124.00
+target  25.00  346.00
+
+Averages (mean):
+age        48.52
+sex         1.47
+bmi        26.38
+bp         94.65
+s1        189.14
+s2        115.44
+s3         49.79
+s4          4.07
+s5          4.64
+s6         91.26
+target    152.13
+
+============================================================
+MISSING VALUES
+============================================================
+age       0
+sex       0
+bmi       0
+bp        0
+s1        0
+s2        0
+s3        0
+s4        0
+s5        0
+s6        0
+target    0
+Total missing values: 0
+
+============================================================
+TARGET DISTRIBUTION (grouped into 3 ranges)
+============================================================
+target
+low       148
+medium    147
+high      147
+
+============================================================
+CORRELATION OF EACH FEATURE WITH THE TARGET
+============================================================
+bmi    0.586
+s5     0.566
+bp     0.441
+s4     0.430
+s6     0.382
+s1     0.212
+age    0.188
+s2     0.174
+sex    0.043
+s3    -0.395

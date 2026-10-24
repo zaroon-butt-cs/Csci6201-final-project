@@ -1,0 +1,29 @@
+CSCI 6201 - Lab 2 Submission (Final Project Checkpoint)
+=======================================================
+
+Team Members:
+  - Zaroon (individual project)
+
+Dataset Name:
+  Diabetes dataset (scikit-learn Toy Datasets) - Regression
+
+Repository URL:
+  https://github.com/zaroon-butt-cs/Csci6201-final-project
+
+Research Questions:
+  1. Can the 10 baseline measurements be used to predict a patient's
+     disease progression after one year?
+  2. Which features appear most related to disease progression?
+  3. How well does a simple Linear Regression model perform, and can
+     other models improve on it?
+
+Preliminary Result:
+  Linear Regression (80/20 train/test split):
+  MSE = 2900.19, MAE = 42.79, R-squared = 0.453
+
+Questions for Instructor Feedback:
+  - I am currently working individually. Is that approved, or should I
+    join a team for the Final Project?
+  - Are my research questions focused enough, or should I narrow them down?
+  - Would comparing several regression models (Linear, Ridge, Lasso,
+    Random Forest) be an appropriate scope for the Final Project?
