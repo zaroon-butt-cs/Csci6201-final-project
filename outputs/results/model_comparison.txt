@@ -1,0 +1,15 @@
+==============================================================================
+MODEL COMPARISON (same data, same split, same CV folds)
+==============================================================================
+Single split: 80% train / 20% test, random_state=42
+Cross-validation: 5-fold KFold, shuffle=True, random_state=42
+Ranked by mean cross-validated R2 (higher is better).
+
+            Model  Test R2  Test MAE  Test MSE  CV R2 mean  CV R2 std  CV MAE mean  CV MSE mean
+            Lasso    0.467    42.803  2824.568       0.480      0.082       44.453     3008.649
+            Ridge    0.454    42.812  2892.015       0.479      0.083       44.243     3012.578
+Linear Regression    0.453    42.794  2900.194       0.478      0.085       44.270     3015.382
+    Random Forest    0.443    44.078  2953.624       0.429      0.084       46.686     3315.942
+    Decision Tree    0.078    53.921  4887.000      -0.141      0.150       63.678     6666.467
+
+Best model: Lasso (CV R2 = 0.480 +/- 0.082, CV MAE = 44.45)
