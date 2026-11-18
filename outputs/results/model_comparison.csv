@@ -1,0 +1,6 @@
+Model,CV R2 mean,CV R2 std,CV MAE mean,CV RMSE mean,Test R2,Test MAE,Test RMSE,Tuned settings,p vs top,Top wins %
+Ridge,0.4819,0.0655,44.5648,54.9332,0.4541,42.812,53.7775,alpha=1,,
+Linear Regression,0.4818,0.0689,44.5025,54.9192,0.4526,42.7941,53.8534,(nothing to tune),0.9708,52.0
+Lasso,0.48,0.0669,44.6791,55.0276,0.456,42.8152,53.6857,alpha=0.147,0.5605,54.0
+Random Forest,0.449,0.0553,46.7224,56.7113,0.4753,43.3584,52.7238,"max_depth=None, max_features=0.33, min_samples_leaf=5",0.1128,80.0
+Decision Tree,0.3311,0.0942,50.0701,62.3649,0.2949,49.3653,61.1187,"max_depth=2, min_samples_leaf=1",0.0003,100.0

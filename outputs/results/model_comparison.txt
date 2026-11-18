@@ -1,15 +1,32 @@
-==============================================================================
-MODEL COMPARISON (same data, same split, same CV folds)
-==============================================================================
-Single split: 80% train / 20% test, random_state=42
-Cross-validation: 5-fold KFold, shuffle=True, random_state=42
-Ranked by mean cross-validated R2 (higher is better).
+============================================================================================
+MODEL COMPARISON (tuned models, same data, same splits)
+============================================================================================
+1) Repeated nested cross-validation: 5 folds x 10 repeats = 50 rounds, all 442 samples, random_state=42
+   Each model is tuned inside every round, then scored on unseen data.
+   R2: higher is better.  MAE / RMSE: lower is better.
+   'p vs top'   = corrected resampled t-test against Ridge (p < 0.05 means really worse).
+   'Top wins %' = share of the 50 rounds where Ridge beat this model.
 
-            Model  Test R2  Test MAE  Test MSE  CV R2 mean  CV R2 std  CV MAE mean  CV MSE mean
-            Lasso    0.467    42.803  2824.568       0.480      0.082       44.453     3008.649
-            Ridge    0.454    42.812  2892.015       0.479      0.083       44.243     3012.578
-Linear Regression    0.453    42.794  2900.194       0.478      0.085       44.270     3015.382
-    Random Forest    0.443    44.078  2953.624       0.429      0.084       46.686     3315.942
-    Decision Tree    0.078    53.921  4887.000      -0.141      0.150       63.678     6666.467
+            Model  CV R2 mean  CV R2 std  CV MAE mean  CV RMSE mean p vs top Top wins %
+            Ridge       0.482      0.066       44.565        54.933    (top)          -
+Linear Regression       0.482      0.069       44.502        54.919    0.971        52%
+            Lasso       0.480      0.067       44.679        55.028    0.560        54%
+    Random Forest       0.449      0.055       46.722        56.711    0.113        80%
+    Decision Tree       0.331      0.094       50.070        62.365   <0.001       100%
 
-Best model: Lasso (CV R2 = 0.480 +/- 0.082, CV MAE = 44.45)
+2) Confirmation on the held-out test split (80% train / 20% test, random_state=42)
+
+            Model  Test R2  Test MAE  Test RMSE                                        Tuned settings
+            Ridge    0.454    42.812     53.777                                               alpha=1
+Linear Regression    0.453    42.794     53.853                                     (nothing to tune)
+            Lasso    0.456    42.815     53.686                                           alpha=0.147
+    Random Forest    0.475    43.358     52.724 max_depth=None, max_features=0.33, min_samples_leaf=5
+    Decision Tree    0.295    49.365     61.119                       max_depth=2, min_samples_leaf=1
+
+============================================================================================
+CONCLUSION
+============================================================================================
+Highest mean R2: Ridge (0.482).
+Statistically tied with it (p >= 0.05): Ridge, Linear Regression, Lasso, Random Forest.
+Significantly worse (p < 0.05): Decision Tree.
+Selected model (simplest of the tied models): Linear Regression.

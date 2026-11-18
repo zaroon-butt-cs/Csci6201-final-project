@@ -1,6 +1,6 @@
 # Predicting Diabetes Disease Progression
 
-**CSCI 6201 — Final Project (Lab 2 Checkpoint)**
+**CSCI 6201 — Final Project**
 
 ## Team Members
 
@@ -26,29 +26,39 @@ The data is loaded with `load_diabetes(as_frame=True, scaled=False)` so that all
 ## Project Structure
 
 ```
-├── analysis.py          # Main script: runs the full workflow
+├── analysis.py          # Lab 2: exploration + baseline Linear Regression
+├── compare_models.py    # Final Project: compare 5 models, select one, export it
 ├── requirements.txt     # Python libraries needed
 ├── src/
 │   ├── config.py        # Shared settings (paths, random seed, test size)
 │   ├── data_loader.py   # Loads the dataset and splits it into X and y
 │   ├── explore.py       # Exploratory data analysis
 │   ├── visualize.py     # Plots
-│   └── model.py         # Train/test split, Linear Regression, evaluation
+│   ├── model.py         # Train/test split, Linear Regression, evaluation
+│   ├── compare.py       # Tuning, repeated cross-validation, significance test
+│   └── export.py        # Saves the selected model as JSON for the web app
 ├── outputs/
 │   ├── figures/         # Saved plots (PNG)
-│   └── results/         # eda_summary.txt and metrics.txt
+│   ├── results/         # eda_summary.txt, metrics.txt, model_comparison.txt
+│   └── model/           # model.json (the selected model)
+├── web/                 # Vite + React app that predicts from user input
 ├── docs/                # Blackboard submission files
-└── notebooks/           # For Final Project experiments
+└── notebooks/           # For experiments
 ```
 
 ## How to Run
 
 ```bash
 pip install -r requirements.txt
-python analysis.py
+python analysis.py          # exploration + baseline model (a few seconds)
+python compare_models.py    # model comparison + export (about 5 minutes)
+
+cd web                      # the web app
+npm install
+npm run dev
 ```
 
-The script prints the exploratory analysis and model results, then saves the plots to `outputs/figures/` and the text results to `outputs/results/`.
+`analysis.py` prints the exploratory analysis and baseline results. `compare_models.py` prints the model comparison, saves figures 05 to 07, and writes the selected model to `outputs/model/model.json` and `web/src/data/model.json`.
 
 ## Workflow
 
@@ -104,29 +114,68 @@ The points follow the dashed "perfect prediction" line, so the model captures th
 
 Full output: [outputs/results/metrics.txt](outputs/results/metrics.txt)
 
+## Final Project: Which Model Is Best?
+
+Five regression models were compared: Linear Regression, Ridge, Lasso, Decision Tree and Random Forest.
+
+### How the comparison was kept fair
+
+1. **Same data and same splits for every model.** All models are scored on exactly the same train/test rounds.
+2. **Every model is tuned.** A grid search picks each model's settings (for example `alpha` for Ridge and Lasso, `max_depth` for the trees). An untuned Decision Tree memorises the training data, so comparing default settings would be unfair.
+3. **Repeated nested cross-validation.** 5 folds repeated 10 times gives 50 rounds. In each round the tuning uses the training part only, and the model is scored on data it has never seen. Linear models are scaled inside a pipeline, so the scaler is also fitted on training data only.
+4. **Significance test.** The corrected resampled t-test (Nadeau and Bengio, 2003) checks whether a difference between two models is real or just noise from the splits.
+5. **Selection rule, fixed in advance.** Take the model with the highest mean R². Any model that is not significantly worse (p ≥ 0.05) counts as tied. Among tied models, choose the simplest.
+
+### Results (50 cross-validation rounds)
+
+| Model | R² (mean ± std) | MAE | RMSE | p vs top | Top model wins |
+|---|---|---|---|---|---|
+| Ridge | 0.482 ± 0.066 | 44.57 | 54.93 | (top) | |
+| **Linear Regression** | **0.482 ± 0.069** | **44.50** | **54.92** | 0.971 | 52% of rounds |
+| Lasso | 0.480 ± 0.067 | 44.68 | 55.03 | 0.560 | 54% of rounds |
+| Random Forest | 0.449 ± 0.055 | 46.72 | 56.71 | 0.113 | 80% of rounds |
+| Decision Tree | 0.331 ± 0.094 | 50.07 | 62.37 | < 0.001 | 100% of rounds |
+
+Confirmation on the held-out test split (80/20, `random_state=42`): Ridge 0.454, Linear Regression 0.453, Lasso 0.456, Random Forest 0.475, Decision Tree 0.295 (R²). The test split has only 89 patients, so these single numbers are less reliable than the 50-round averages.
+
+Full output: [outputs/results/model_comparison.txt](outputs/results/model_comparison.txt)
+
+![Model comparison box plot](outputs/figures/05_model_comparison_r2.png)
+
+![Model comparison summary](outputs/figures/06_model_summary.png)
+
+### Conclusion
+
+- **Linear Regression, Ridge and Lasso perform the same.** Their R² values differ by 0.002, and each one beats the others in about half of the rounds.
+- **Random Forest is slightly lower** (R² 0.449). The top model beats it in 80% of the rounds, but the difference is not statistically significant (p = 0.11).
+- **Decision Tree is clearly the worst** (R² 0.331, p < 0.001), even after tuning.
+- **Selected model: Linear Regression.** It is tied for the best accuracy, has the lowest MAE and RMSE, and is the simplest model with nothing to tune.
+
+No model explains more than about 48% of the variation, so the ten baseline measurements only partly predict disease progression. A typical prediction is off by about 45 points on a scale of 25 to 346.
+
+![Selected model predictions](outputs/figures/07_selected_model_predicted_vs_actual.png)
+
+## Web App
+
+The `web/` folder contains a Vite + React app that asks for the ten measurements and shows the predicted progression after one year, using the selected model.
+
+- Each input has a spinner (− value +) and a slider, limited to the range seen in the dataset.
+- The prediction updates live and is shown on a gauge, with the typical error and how the patient compares with the 442 patients in the dataset.
+- A chart shows how much each measurement raises or lowers the prediction.
+- Three real patients from the dataset can be loaded as examples, together with their recorded progression.
+
+The model is a formula (`prediction = intercept + Σ coefficient × scaled value`), so the app calculates it in the browser from `web/src/data/model.json`. The browser result matches scikit-learn for all 442 patients (largest difference below 1e-12). See [web/README.md](web/README.md).
+
 ## Current Progress
 
 - Dataset selected, loaded and explored in Python
-- Four visualizations created and interpreted
-- Baseline Linear Regression model trained and evaluated (R² = 0.453)
-- Project structured into reusable modules for the Final Project
+- Baseline Linear Regression model trained and evaluated (R² = 0.453 on the test split)
+- Five models tuned and compared with repeated nested cross-validation and a significance test
+- Linear Regression selected and exported
+- Web app built for interactive predictions
 
-## Next Steps for Final Project
+## Possible Further Work
 
-**What is working so far?**
-The full workflow runs from start to finish with one command: loading, exploration, visualizations, model training and evaluation. The baseline model explains about 45% of the variation in the target.
-
-**What part of the project still needs work?**
-The results come from a single train/test split, so they may change with a different split. Also, the coefficients cannot be compared directly yet, because the features are in different units.
-
-**What do I plan to add or improve before the Final Project?**
-- Use cross-validation for more reliable performance estimates
-- Compare other models: Ridge, Lasso, Decision Tree, Random Forest
-- Scale the features so coefficients can be compared to measure feature importance
-- Try feature selection (for example, using only the strongest features such as BMI, s5 and bp)
-- Add a residual plot to study where the model makes its largest errors
-
-**Is there anything I would specifically like instructor feedback on?**
-- I am currently working individually. Is that approved, or should I join a team for the Final Project?
-- Are my research questions focused enough, or should I narrow them down?
-- Would comparing several regression models be an appropriate scope for the Final Project?
+- Feature selection (for example, using only BMI, s5 and bp) to see how few measurements are needed
+- A residual plot to study where the model makes its largest errors
+- Standardised coefficients as a feature-importance chart in the report
